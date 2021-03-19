@@ -53,6 +53,9 @@ function loadHistoryStack(context: ExtensionContext, filePath: string) {
   historyCursor = context.globalState.get(filePath, 0);
   let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
   historyCursor -= pageSize * 4;
+  if (historyCursor < 0) {
+    historyCursor = 0;
+  }
 }
 
 export function loadFile(context: ExtensionContext, newfilePath: string) {
