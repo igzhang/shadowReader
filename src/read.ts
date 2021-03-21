@@ -1,10 +1,12 @@
 import { workspace, ExtensionContext, window } from "vscode";
+import { setStatusBarMsg } from "./util";
 import { Parser } from "./parse/interface";
 import { TxtFileParser } from "./parse/txt";
 
 let fileName: string = "";
 let parser: Parser;
 let historyCursor = 0;
+const readEOFMsg = "已读完啦！   100.00%";
 
 function readContent(context: ExtensionContext, pageSize: number): string {
   // check config
@@ -12,16 +14,7 @@ function readContent(context: ExtensionContext, pageSize: number): string {
     return "请先选择书籍";
   }
 
-  // get content
-  let [nextPage, readedBytes] = parser.getPage(pageSize, historyCursor);
-
-  if (readedBytes === 0) {
-    return "已读完啦！   100.00%";
-  }
-
-  // update history
-  historyCursor += readedBytes;
-  context.globalState.update(fileName, historyCursor);
+  let nextPage = readContentWithoutPrecent(context, pageSize);
 
   // calculate read precent
   let precent = (historyCursor / parser.getTotalSize() * 100).toFixed(2);
@@ -29,9 +22,29 @@ function readContent(context: ExtensionContext, pageSize: number): string {
   return `${nextPage}   ${precent}%`;
 }
 
+function readContentWithoutPrecent(context: ExtensionContext, pageSize: number): string {
+  // get content
+  let [nextPage, readedBytes] = parser.getPage(pageSize, historyCursor);
+
+  if (readedBytes === 0) {
+    return readEOFMsg;
+  }
+
+  // update history
+  historyCursor += readedBytes;
+  context.globalState.update(fileName, historyCursor);
+
+  return nextPage;
+}
+
 export function readNextLine(context: ExtensionContext): string {
   let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
   return readContent(context, pageSize);
+}
+
+function readNextLineWithoutPercent(context: ExtensionContext): string {
+  let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
+  return readContentWithoutPrecent(context, pageSize);
 }
 
 export function readPrevLine(context: ExtensionContext): string {
@@ -70,5 +83,38 @@ export function loadFile(context: ExtensionContext, newfilePath: string) {
 
   fileName = newfilePath;
   let text = readNextLine(context);
-  window.setStatusBarMessage(text);
+  setStatusBarMsg(text);
+}
+
+export function searchContentToEnd(context: ExtensionContext, keyword: string): string {
+  let lineContent: string;
+  let keywordIndex = 0;
+  let preLineEndMatch = false;
+  while (true) {
+    lineContent = readNextLineWithoutPercent(context);
+    if(lineContent === readEOFMsg) {
+      break;
+    }
+    
+    for (let char of lineContent) {
+      if (char === keyword[keywordIndex]) {
+        keywordIndex++;
+        if (keywordIndex === keyword.length) {
+          if (preLineEndMatch) {
+            return readPrevLine(context);
+          } else {
+            return lineContent;
+          }
+        }
+      } else {
+        keywordIndex = 0;
+      }
+    }
+
+    // between two lines
+    if (keywordIndex !== 0) {
+      preLineEndMatch = true;
+    }
+  }
+  return "";
 }

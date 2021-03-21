@@ -3,9 +3,9 @@
 vscode摸鱼看书插件，老板站在身后也不发现不了
 
 ## Features
-- 支持状态栏
-- 支持本地文本（使用utf8格式）
-- 其他编码格式转码（支持格式参考[chardet](https://www.npmjs.com/package/chardet)）
+- 支持状态栏显示
+- 支持本地文本阅读
+- 其他编码格式自动转码（支持格式GB18030、Big5、UTF-8、UTF-16、UTF-32等）
 
 ## Quick Start
 1. ctrl+shift+p，`shadowReader:开始工作`
