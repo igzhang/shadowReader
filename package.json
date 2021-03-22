@@ -2,7 +2,7 @@
 	"name": "shadow-reader",
 	"displayName": "shadow reader",
 	"description": "摸鱼划水看书，十分隐蔽",
-	"version": "0.1.3",
+	"version": "0.2.1",
 	"publisher": "rainbroadcast",
 	"engines": {
 		"vscode": "^1.54.0"
@@ -34,18 +34,15 @@
 		"keybindings": [
 			{
 				"command": "shadowReader.getNextPage",
-				"key": "alt+.",
-				"when": "isLinux || isMac || isWindows || isWeb"
+				"key": "alt+."
 			},
 			{
 				"command": "shadowReader.getPrevPage",
-				"key": "alt+,",
-				"when": "isLinux || isMac || isWindows || isWeb"
+				"key": "alt+,"
 			},
 			{
 				"command": "shadowReader.showBossInfo",
-				"key": "alt+/",
-				"when": "isLinux || isMac || isWindows || isWeb"
+				"key": "alt+/"
 			}
 		],
 		"commands": [

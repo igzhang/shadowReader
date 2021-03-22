@@ -14,15 +14,6 @@ function readContent(context: ExtensionContext, pageSize: number): string {
     return "请先选择书籍";
   }
 
-  let nextPage = readContentWithoutPrecent(context, pageSize);
-
-  // calculate read precent
-  let precent = (historyCursor / parser.getTotalSize() * 100).toFixed(2);
-
-  return `${nextPage}   ${precent}%`;
-}
-
-function readContentWithoutPrecent(context: ExtensionContext, pageSize: number): string {
   // get content
   let [nextPage, readedBytes] = parser.getPage(pageSize, historyCursor);
 
@@ -34,17 +25,15 @@ function readContentWithoutPrecent(context: ExtensionContext, pageSize: number):
   historyCursor += readedBytes;
   context.globalState.update(fileName, historyCursor);
 
-  return nextPage;
+  // calculate read precent
+  let precent = (historyCursor / parser.getTotalSize() * 100).toFixed(2);
+
+  return `${nextPage}   ${precent}%`;
 }
 
 export function readNextLine(context: ExtensionContext): string {
   let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
   return readContent(context, pageSize);
-}
-
-function readNextLineWithoutPercent(context: ExtensionContext): string {
-  let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
-  return readContentWithoutPrecent(context, pageSize);
 }
 
 export function readPrevLine(context: ExtensionContext): string {
@@ -87,23 +76,29 @@ export function loadFile(context: ExtensionContext, newfilePath: string) {
 }
 
 export function searchContentToEnd(context: ExtensionContext, keyword: string): string {
-  let lineContent: string;
   let keywordIndex = 0;
   let preLineEndMatch = false;
+  let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
   while (true) {
-    lineContent = readNextLineWithoutPercent(context);
-    if(lineContent === readEOFMsg) {
+    // read content
+    let [nextPage, readedBytes] = parser.getPage(pageSize, historyCursor);
+    if (readedBytes === 0) {
       break;
     }
+
+    // update history
+    historyCursor += readedBytes;
     
-    for (let char of lineContent) {
+    for (let char of nextPage) {
       if (char === keyword[keywordIndex]) {
         keywordIndex++;
         if (keywordIndex === keyword.length) {
           if (preLineEndMatch) {
             return readPrevLine(context);
           } else {
-            return lineContent;
+            let precent = (historyCursor / parser.getTotalSize() * 100).toFixed(2);
+            context.globalState.update(fileName, historyCursor);
+            return `${nextPage}   ${precent}%`;;
           }
         }
       } else {
@@ -116,5 +111,5 @@ export function searchContentToEnd(context: ExtensionContext, keyword: string): 
       preLineEndMatch = true;
     }
   }
-  return "";
+  return readEOFMsg;
 }
