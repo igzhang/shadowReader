@@ -3,22 +3,37 @@
 vscode摸鱼看书插件，老板站在身后也不发现不了
 
 ## Features
-- 支持状态栏
-- 支持本地文本（使用utf8格式）
-- 其他编码格式转码（支持格式参考[chardet](https://www.npmjs.com/package/chardet)）
+- 支持状态栏显示
+- 支持本地文本阅读
+- 其他编码格式自动转码（支持格式GB18030、Big5、UTF-8、UTF-16、UTF-32等）
+- 支持向后搜索内容
+
+## Install
+vscode插件市场，搜索`shadow reader`
 
 ## Quick Start
-1. ctrl+shift+p，`shadowReader:开始工作`
+### 主菜单
+1. ctrl+shift+p，搜索`shadowReader:开始工作`
 ![feature X](./images/start.jpg)
 主菜单如下
 ![feature X](./images/main.jpg)
-2. 选择`添加新书籍`，选择文件，并起一个好记的名字吧
+
+### 新增书籍
+1. 选择`添加新书籍`，选择`本地`，选择文件，并起一个好记的名字吧
 ![feature X](./images/nick.png)
-3. 选择`开始阅读`，选择刚添加的`活着`
+
+### 开始阅读
+1. 在主菜单选择`开始阅读`，选择刚添加的书名`活着`
 ![feature X](./images/select_book.jpg)
-4. 使用快捷键，上一页`alt+,`，下一页`alt+.`，老板键`alt+/`
+2. 使用快捷键，上一页`alt+,`，下一页`alt+.`，老板键`alt+/`
 ![feature X](./images/show_text.jpg)
-5. Enjoy!
+
+### 删除书籍
+1. 在主菜单选择`删除书籍`，选择书名`活着`，即可删除
+
+### 按内容搜索
+1. 点击状态栏，输入搜索文本
+![feature X](./images/search.jpg)
 
 ## Extension Settings
 * `shadowReader.pageSize`: 每次最多显示字数
@@ -33,7 +48,6 @@ vscode摸鱼看书插件，老板站在身后也不发现不了
 - 上下一页的无反应（暂不清楚形成原因，可通过重新设置快捷键解决）
 
 ## Future Feature
-- 向前、向后搜索内容
 - 在线图书下载
 - 其他格式支持(比如.epub)
 - 其他隐藏显示手段
@@ -41,7 +55,10 @@ vscode摸鱼看书插件，老板站在身后也不发现不了
 ## Inspire
 本插件灵感来自于[Thief-Book-VSCode](https://github.com/cteamx/Thief-Book-VSCode)，二者区别：  
 
-- 大文件：Thief-Book-VSCode使用全部加载的方式，shadow-reader采用流式加载的方式
-- 编码：Thief-Book-VSCode仅支持utf8编码，shadow-reader已支持多种转码
-- 维护：Thief-Book-VSCode最近更新为2019年，shadow-reader会一直维护
-- 功能：shadow-reader未来会更新更多功能，而不局限于**状态栏**和**本地文件**
+区别  | Thief-Book-VSCode | shadow reader
+---- | ---- | ----
+大文件 | 全部加载 | 部分加载
+支持编码 | utf8 | GB\Big5\UTF
+支持书量 | 1本 | 多本
+全文搜索 | 不支持 | 向后
+更新时间 | 2019 | 2021
