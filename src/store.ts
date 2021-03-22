@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, createReadStream, createWriteStream, copyFileSync } from "fs";
-import { ExtensionContext } from "vscode";
+import { existsSync, mkdirSync, createReadStream, createWriteStream, copyFileSync, unlink } from "fs";
+import { ExtensionContext, window } from "vscode";
 import chardet = require('chardet');
 import iconv = require('iconv-lite');
 import path = require('path');
@@ -44,4 +44,18 @@ function convertFileDecode(oldfilePath: string, decode: string, newFilePath: str
     .pipe(iconv.decodeStream(decode))
     .pipe(iconv.encodeStream("utf32-le"))
     .pipe(createWriteStream(newFilePath));
+}
+
+export function deleteFile(context: ExtensionContext, fileName: string) {
+    let bookLibraryDictString = context.globalState.get(bookLibraryKey, "{}");
+    let bookLibraryDict = JSON.parse(bookLibraryDictString);
+    delete bookLibraryDict[fileName];
+    context.globalState.update(bookLibraryKey, JSON.stringify(bookLibraryDict));
+
+    let diskFilePath = path.join(context.globalStorageUri.fsPath, fileName);
+    unlink(diskFilePath, err => {
+        if (err) {
+            window.showWarningMessage(err?.message);
+        }
+    });
 }

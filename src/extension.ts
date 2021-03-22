@@ -1,17 +1,23 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { showMainMenu } from "./menu";
+import { setStatusBarMsg, searchToEndCommandID } from "./util";
+import { showMainMenu, showSearchKeywordBox } from "./menu";
 import { readNextLine, readPrevLine, closeAll } from "./read";
 
 
 function showHelloWorld() {
-	vscode.window.setStatusBarMessage("Hello world");
+	setStatusBarMsg("Hello world");
 }
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+
+	let searchKeyWordToEnd = vscode.commands.registerCommand(searchToEndCommandID, () => {
+		showSearchKeywordBox(context);
+	});
+	context.subscriptions.push(searchKeyWordToEnd);
 
 	let getNextPage = vscode.commands.registerCommand("shadowReader.getNextPage", () => {
 		let text: string;
@@ -20,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 		} catch (e) {
 			text = <string>e;
 		}
-		vscode.window.setStatusBarMessage(text);
+		setStatusBarMsg(text);
 	});
 	context.subscriptions.push(getNextPage);
 
@@ -31,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 		} catch (e) {
 			text = <string>e;
 		}
-		vscode.window.setStatusBarMessage(text);
+		setStatusBarMsg(text);
 	});
 	context.subscriptions.push(getPrevPage);
 

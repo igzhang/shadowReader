@@ -1,10 +1,12 @@
 import { workspace, ExtensionContext, window } from "vscode";
+import { setStatusBarMsg } from "./util";
 import { Parser } from "./parse/interface";
 import { TxtFileParser } from "./parse/txt";
 
 let fileName: string = "";
 let parser: Parser;
 let historyCursor = 0;
+const readEOFMsg = "已读完啦！   100.00%";
 
 function readContent(context: ExtensionContext, pageSize: number): string {
   // check config
@@ -16,7 +18,7 @@ function readContent(context: ExtensionContext, pageSize: number): string {
   let [nextPage, readedBytes] = parser.getPage(pageSize, historyCursor);
 
   if (readedBytes === 0) {
-    return "已读完啦！   100.00%";
+    return readEOFMsg;
   }
 
   // update history
@@ -53,6 +55,9 @@ function loadHistoryStack(context: ExtensionContext, filePath: string) {
   historyCursor = context.globalState.get(filePath, 0);
   let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
   historyCursor -= pageSize * 4;
+  if (historyCursor < 0) {
+    historyCursor = 0;
+  }
 }
 
 export function loadFile(context: ExtensionContext, newfilePath: string) {
@@ -67,5 +72,44 @@ export function loadFile(context: ExtensionContext, newfilePath: string) {
 
   fileName = newfilePath;
   let text = readNextLine(context);
-  window.setStatusBarMessage(text);
+  setStatusBarMsg(text);
+}
+
+export function searchContentToEnd(context: ExtensionContext, keyword: string): string {
+  let keywordIndex = 0;
+  let preLineEndMatch = false;
+  let pageSize: number = <number>workspace.getConfiguration().get("shadowReader.pageSize");
+  while (true) {
+    // read content
+    let [nextPage, readedBytes] = parser.getPage(pageSize, historyCursor);
+    if (readedBytes === 0) {
+      break;
+    }
+
+    // update history
+    historyCursor += readedBytes;
+    
+    for (let char of nextPage) {
+      if (char === keyword[keywordIndex]) {
+        keywordIndex++;
+        if (keywordIndex === keyword.length) {
+          if (preLineEndMatch) {
+            return readPrevLine(context);
+          } else {
+            let precent = (historyCursor / parser.getTotalSize() * 100).toFixed(2);
+            context.globalState.update(fileName, historyCursor);
+            return `${nextPage}   ${precent}%`;;
+          }
+        }
+      } else {
+        keywordIndex = 0;
+      }
+    }
+
+    // between two lines
+    if (keywordIndex !== 0) {
+      preLineEndMatch = true;
+    }
+  }
+  return readEOFMsg;
 }
