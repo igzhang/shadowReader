@@ -7,9 +7,10 @@ vscode摸鱼看书插件，老板站在身后也不发现不了
 - 支持本地文本阅读
 - 其他编码格式自动转码（支持格式GB18030、Big5、UTF-8、UTF-16、UTF-32等）
 - 支持向后搜索内容
+- 支持网络书籍
 
 ## Install
-vscode插件市场，搜索`shadow reader`
+vscode插件市场，搜索`shadow reader`，安装
 
 ## Quick Start
 ### 主菜单
@@ -19,8 +20,13 @@ vscode插件市场，搜索`shadow reader`
 ![feature X](./images/main.jpg)
 
 ### 新增书籍
-1. 选择`添加新书籍`，选择`本地`，选择文件，并起一个好记的名字吧
+1. 选择`添加新书籍`
+2. 本地书籍：选择`本地书籍`，选择文件，并起一个好记的名字吧
+![feature X](./images/new_book.jpg)
 ![feature X](./images/nick.png)
+3. 网络书籍：选择`网络书籍`，搜索名字(*为随机几个)，选择对应书籍
+![feature X](./images/fuzzy.jpg)
+![feature X](./images/online.jpg)
 
 ### 开始阅读
 1. 在主菜单选择`开始阅读`，选择刚添加的书名`活着`
@@ -36,7 +42,8 @@ vscode插件市场，搜索`shadow reader`
 ![feature X](./images/search.jpg)
 
 ## Extension Settings
-* `shadowReader.pageSize`: 每次最多显示字数
+* `shadowReader.pageSize`：每次最多显示字数
+* `shadowReader.onlineBookURL`：在线书籍目录，可切换为自己的地址
 * 修改快捷键：首选项 -- 键盘快捷方式
 ![feature X](./images/keybind.jpg)
 
@@ -48,7 +55,6 @@ vscode插件市场，搜索`shadow reader`
 - 上下一页的无反应（暂不清楚形成原因，可通过重新设置快捷键解决）
 
 ## Future Feature
-- 在线图书下载
 - 其他格式支持(比如.epub)
 - 其他隐藏显示手段
 
@@ -61,4 +67,5 @@ vscode插件市场，搜索`shadow reader`
 支持编码 | utf8 | GB\Big5\UTF
 支持书量 | 1本 | 多本
 全文搜索 | 不支持 | 向后
+在线书籍 | 不支持 | 支持并可自定义
 更新时间 | 2019 | 2021
