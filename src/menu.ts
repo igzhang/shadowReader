@@ -1,16 +1,20 @@
-import { window, ExtensionContext } from "vscode";
+import { window, ExtensionContext, workspace } from "vscode";
 import path = require('path');
-import { checkFileDecodeOrConvert, bookLibraryKey, deleteFile } from "./store";
+import { checkFileDecodeOrConvert, bookLibraryKey, deleteFile, downloadFileAndConvert } from "./store";
 import { loadFile, searchContentToEnd } from "./read";
 import { setStatusBarMsg } from "./util";
+import got from "got";
+
 
 let bookLibraryDict: object = {};
+let onlineBookObject: object;
 
 enum Menu {
     readBook = "开始阅读",
     newBook = "添加新书籍",
     newLocalBook = "本地书籍",
     deleteBook = "删除书籍",
+    newOnlineBook = "网络书籍",
 }
 
 function hasKey<O>(obj: O, key: keyof any): key is keyof O {
@@ -48,7 +52,7 @@ export async function showMainMenu(context: ExtensionContext) {
 }
 
 async function newBookMenu(context: ExtensionContext) {
-    let newBookChoice = await window.showQuickPick([Menu.newLocalBook, ], {
+    let newBookChoice = await window.showQuickPick([Menu.newLocalBook, Menu.newOnlineBook ], {
         matchOnDescription: true,
     });
     switch (newBookChoice) {
@@ -63,7 +67,6 @@ async function newBookMenu(context: ExtensionContext) {
                         nickName => {
                             if (nickName) {
                                 checkFileDecodeOrConvert(context, filePaths[0].fsPath, nickName);
-                                window.showInformationMessage("添加成功");
                             }
                         }
                     );
@@ -71,6 +74,48 @@ async function newBookMenu(context: ExtensionContext) {
             });
             break;
     
+        case Menu.newOnlineBook:
+            let onlineBookURL: string | undefined = workspace.getConfiguration().get("shadowReader.onlineBookURL");
+            if (!onlineBookURL) {
+                window.showErrorMessage("onlineBookURL未配置");
+                return;
+            }
+            (async () => {
+                try {
+                    const response = await got.get(onlineBookURL, {responseType: "json"});
+		            onlineBookObject = response.body as object;
+                    window.showInputBox({
+                        value: "*",
+                        placeHolder: "*代表随机",
+                        prompt: "要搜索的书名"
+                    }).then(
+                        bookFuzzyName => {
+                            if (bookFuzzyName) {
+                                let quickPickMenu = [];
+                                for (const key in onlineBookObject) {
+                                    if (bookFuzzyName === "*" || key.includes(bookFuzzyName)) {
+                                        quickPickMenu.push(key);
+                                        if (quickPickMenu.length > 6) {
+                                            break;
+                                        }
+                                    }
+                                }
+                                window.showQuickPick(quickPickMenu, {
+                                    matchOnDescription: true,
+                                }).then(selectBookName => {
+                                    if (selectBookName && hasKey(onlineBookObject, selectBookName)) {
+                                        downloadFileAndConvert(context, selectBookName, onlineBookObject[selectBookName]);
+                                    }
+                                });
+                            }
+                        }
+                    );
+                } catch(err) {
+                    window.showErrorMessage(`获取在线书籍错误${err}`);
+                }
+            })();
+            break;
+
         default:
             break;
     }
