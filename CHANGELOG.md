@@ -1,6 +1,10 @@
 # Change Log
 版本改动日志
 
+### 0.3.1
+>> 发布时间2021-03-25
+- feature：增加“网络书籍”选项
+
 ### 0.2.1
 >> 发布时间2021-03-22
 - feature：增加“删除书籍”、“根据内容向后查找”功能
@@ -8,20 +12,20 @@
 
 ### 0.1.3
 >> 发布时间2021-03-19
-- 修改默认编码为utf32le
+- impovement：修改默认编码为utf32le
 - bug fix：退出vscode时，当前阅读进度未保存
 
 ### 0.1.2
 >> 发布时间2021-03-18
 - bug fix: 新添加utf8文件失败的问题
-- 修改默认快捷键为alt，以避免影响注释功能
+- impovement：修改默认快捷键为alt，以避免影响注释功能
 
 ### 0.1.1
 >> 发布时间2021-03-18
-- 全新用户UI
-- 自动转码（支持格式参考[chardet](https://www.npmjs.com/package/chardet)）
+- impovement：全新用户UI
+- feature：自动转码（支持格式参考[chardet](https://www.npmjs.com/package/chardet)）
 
 ### 0.0.1
 >> 发布时间2021-03-16
-- 支持本地utf8文件
-- 自动保存当前书签
+- feature：支持本地utf8文件
+- feature：自动保存当前书签
