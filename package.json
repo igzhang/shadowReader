@@ -31,8 +31,14 @@
 				},
 				"shadowReader.onlineBookURL": {
 					"type": "string",
-					"default": "https://fishestouch.github.io/book.json",
-					"description": "在线书籍地址"
+					"default": "https://www.biqubao.com",
+					"enum": [
+						"https://www.biqubao.com"
+					],
+					"enumDescriptions": [
+						"笔趣阁"
+					],
+					"description": "在线书源"
 				}
 			}
 		},
@@ -80,8 +86,9 @@
 		"vscode-test": "^1.5.0"
 	},
 	"dependencies": {
+		"axios": "^0.21.1",
 		"chardet": "^1.3.0",
-		"got": "^11.8.2",
+		"cheerio": "^1.0.0-rc.5",
 		"iconv-lite": "^0.6.2"
 	}
 }
