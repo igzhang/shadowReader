@@ -1,17 +1,19 @@
-export interface Parser {
+import { BookStore } from "./model";
 
-    // open resource with encode utf-8;
-    open(name: string): void;
+export interface Parser {
 
     // close resource if necessary;
     close(): void;
 
-    // get page text
-    // @param: number: read string length <= size
-    // @param: start: start bytes
-    // return: [text info, readed bytes]
-    getPage(size: number, start: number): [string, number];
+    // get next page content, if string.length === 0, means no more content
+    getNextPage(pageSize: number): Promise<string>;
 
-    // get total size of resource
-    getTotalSize(): number;
+    // get prev page content
+    getPrevPage(pageSize: number): Promise<string>;
+
+    // get percent info
+    getPercent(): string;
+
+    // get persist read history, used to cache history
+    getPersistHistory(): BookStore;
 }

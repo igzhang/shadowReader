@@ -1,13 +1,13 @@
 import { window, ExtensionContext, workspace } from "vscode";
 import path = require('path');
-import { checkFileDecodeOrConvert, bookLibraryKey, deleteFile, downloadFileAndConvert } from "./store";
+import { checkFileDecodeOrConvert, bookLibraryKey, deleteFile } from "./store";
 import { loadFile, searchContentToEnd } from "./read";
 import { setStatusBarMsg } from "./util";
-import got from "got";
-
+import { Craweler } from "./crawler/interface";
+import { BiquCrawler } from "./crawler/biqu";
+import { BookKind } from "./parse/model";
 
 let bookLibraryDict: object = {};
-let onlineBookObject: object;
 
 enum Menu {
     readBook = "开始阅读",
@@ -80,40 +80,48 @@ async function newBookMenu(context: ExtensionContext) {
                 window.showErrorMessage("onlineBookURL未配置");
                 return;
             }
-            (async () => {
-                try {
-                    const response = await got.get(onlineBookURL, {responseType: "json"});
-		            onlineBookObject = response.body as object;
-                    window.showInputBox({
-                        value: "*",
-                        placeHolder: "*代表随机",
-                        prompt: "要搜索的书名"
-                    }).then(
-                        bookFuzzyName => {
-                            if (bookFuzzyName) {
-                                let quickPickMenu = [];
-                                for (const key in onlineBookObject) {
-                                    if (bookFuzzyName === "*" || key.includes(bookFuzzyName)) {
-                                        quickPickMenu.push(key);
-                                        if (quickPickMenu.length > 6) {
-                                            break;
-                                        }
+            window.showInputBox({
+                value: "",
+                prompt: "要搜索的书名"
+            }).then(async bookFuzzyName => {
+                if (bookFuzzyName) {
+                    let crawler: Craweler = new BiquCrawler();
+                    let bookDict = await crawler.searchBook(bookFuzzyName);
+                    window.showQuickPick(Array.from(bookDict.keys()), {matchOnDescription: true}).then(value => {
+                        if (value) {
+                            window.showInputBox({
+                                value: "1",
+                                prompt: "从第几章开始？请输入数字"
+                            }).then(async chapter => {
+                                if (chapter && !isNaN(parseInt(chapter))) {
+                                    let chapterURL: string;
+                                    try {
+                                        chapterURL = await crawler.findChapterURL(<string>bookDict.get(value), parseInt(chapter));
+                                    } catch (err) {
+                                        window.showErrorMessage(err);
+                                        return;
                                     }
+                                    if (chapterURL.length === 0) {
+                                        window.showWarningMessage("找不到目标章节");
+                                        return;
+                                    }
+                                    let bookLibraryDictString = context.globalState.get(bookLibraryKey, "{}");
+                                    let bookLibraryDict = JSON.parse(bookLibraryDictString);
+                                    bookLibraryDict[value] = bookDict.get(value);
+                                    context.globalState.update(bookLibraryKey, JSON.stringify(bookLibraryDict));
+                                    context.globalState.update(<string>bookDict.get(value), {
+                                        kind: BookKind.online,
+                                        readedCount: 0,
+                                        sectionPath: chapterURL,
+                                    });
+                                    window.showInformationMessage("添加成功");
                                 }
-                                window.showQuickPick(quickPickMenu, {
-                                    matchOnDescription: true,
-                                }).then(selectBookName => {
-                                    if (selectBookName && hasKey(onlineBookObject, selectBookName)) {
-                                        downloadFileAndConvert(context, selectBookName, onlineBookObject[selectBookName]);
-                                    }
-                                });
-                            }
+                            });
                         }
-                    );
-                } catch(err) {
-                    window.showErrorMessage(`获取在线书籍错误${err}`);
+                    });
                 }
-            })();
+            });
+            
             break;
 
         default:
@@ -136,9 +144,10 @@ export function showSearchKeywordBox(context: ExtensionContext) {
     }).then(
         keyWord => {
             if (keyWord) {
-                let text = searchContentToEnd(context, keyWord);
-                setStatusBarMsg(text);
-                window.showInformationMessage("搜索完成");
+                let text = searchContentToEnd(context, keyWord).then(text => {
+                    setStatusBarMsg(text);
+                    window.showInformationMessage("搜索完成");
+                });
             }
         }
     );
