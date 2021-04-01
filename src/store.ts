@@ -52,13 +52,11 @@ function convertFileDecode(oldfilePath: string, decode: string, newFilePath: str
 export function deleteFile(context: ExtensionContext, fileName: string) {
     let bookLibraryDictString = context.globalState.get(bookLibraryKey, "{}");
     let bookLibraryDict = JSON.parse(bookLibraryDictString);
+    // TODO delete history
+    // context.globalState.update(bookLibraryDict[fileName], undefined);
     delete bookLibraryDict[fileName];
     context.globalState.update(bookLibraryKey, JSON.stringify(bookLibraryDict));
 
     let diskFilePath = path.join(context.globalStorageUri.fsPath, fileName);
-    unlink(diskFilePath, err => {
-        if (err) {
-            window.showWarningMessage(err?.message);
-        }
-    });
+    unlink(diskFilePath, () => {});
 }

@@ -3,6 +3,7 @@ import { setStatusBarMsg } from "./util";
 import { BookKind, BookStore } from "./parse/model";
 import { Parser } from "./parse/interface";
 import { TxtFileParser } from "./parse/txt";
+import { BiquWebParser } from "./parse/biqu";
 
 let bookPath: string = "";
 let parser: Parser;
@@ -26,6 +27,9 @@ function loadParser(context: ExtensionContext, bookPath: string): Parser {
   switch (bookStore.kind) {
     case BookKind.local:
       return new TxtFileParser(bookPath, bookStore.readedCount);
+    
+    case BookKind.online:
+      return new BiquWebParser(<string>bookStore.sectionPath, bookStore.readedCount);
   
     default:
       throw new Error("book kind is not supported");

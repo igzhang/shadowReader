@@ -4,5 +4,5 @@ export interface Craweler {
     searchBook(keyWord: string): Promise<Map<string, string>>;
 
     // find chapter detail url according to index html
-    findChapterURL(url: string, chapter: string): Promise<string>;
+    findChapterURL(url: string, chapter: number): Promise<string>;
 }

@@ -91,10 +91,10 @@ async function newBookMenu(context: ExtensionContext) {
                         if (value) {
                             window.showInputBox({
                                 value: "1",
-                                prompt: "从第几章开始？"
+                                prompt: "从第几章开始？请输入数字"
                             }).then(async chapter => {
-                                if (chapter) {
-                                    let chapterURL = await crawler.findChapterURL(<string>bookDict.get(value), chapter);
+                                if (chapter && !isNaN(parseInt(chapter))) {
+                                    let chapterURL = await crawler.findChapterURL(<string>bookDict.get(value), parseInt(chapter));
                                     if (chapterURL.length === 0) {
                                         window.showWarningMessage("找不到目标章节");
                                         return;
