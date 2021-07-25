@@ -1,10 +1,6 @@
 import axios from "axios";
 import cheerioModule = require("cheerio");
 import iconv = require('iconv-lite');
-<<<<<<< HEAD
-import { window } from "vscode";
-=======
->>>>>>> b310757f8d1decf354a07903cab772721f993f48
 import { Parser } from "./interface";
 import { BookKind, BookStore } from "./model";
 
