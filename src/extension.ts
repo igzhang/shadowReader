@@ -17,24 +17,16 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(searchKeyWordToEnd);
 
 	let getNextPage = vscode.commands.registerCommand("shadowReader.getNextPage", () => {
-		let text: string;
-		try {
-			text = readNextLine(context);
-		} catch (e) {
-			text = <string>e;
-		}
-		setStatusBarMsg(text);
+		readNextLine(context).then(text => {
+			setStatusBarMsg(text);
+		});
 	});
 	context.subscriptions.push(getNextPage);
 
 	let getPrevPage = vscode.commands.registerCommand("shadowReader.getPrevPage", () => {
-		let text: string;
-		try {
-			text = readPrevLine(context);
-		} catch (e) {
-			text = <string>e;
-		}
-		setStatusBarMsg(text);
+		readPrevLine(context).then(text => {
+			setStatusBarMsg(text);
+		});
 	});
 	context.subscriptions.push(getPrevPage);
 

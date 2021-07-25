@@ -32,7 +32,7 @@ export class TxtFileParser implements Parser {
         return [showText, bufferSize];
     }
 
-    getNextPage(pageSize: number): string {
+    async getNextPage(pageSize: number): Promise<string> {
         let [showText, bufferSize] = this.getPage(pageSize, this.readedCount);
         if (bufferSize === 0) {
             return "";
@@ -41,7 +41,7 @@ export class TxtFileParser implements Parser {
         return showText;
     }
 
-    getPrevPage(pageSize: number): string {
+    getPrevPage(pageSize: number): Promise<string> {
         this.readedCount -= pageSize * 2 * this.stringMaxSize;
         if (this.readedCount < 0) {
             this.readedCount = 0;
@@ -54,7 +54,7 @@ export class TxtFileParser implements Parser {
     }
 
     getPercent(): string {
-        return (this.readedCount / this.totalByteSize * 100).toFixed(2);
+        return `${(this.readedCount / this.totalByteSize * 100).toFixed(2)}%`;
     }
 
     getPersistHistory(): BookStore {

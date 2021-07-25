@@ -94,7 +94,13 @@ async function newBookMenu(context: ExtensionContext) {
                                 prompt: "从第几章开始？请输入数字"
                             }).then(async chapter => {
                                 if (chapter && !isNaN(parseInt(chapter))) {
-                                    let chapterURL = await crawler.findChapterURL(<string>bookDict.get(value), parseInt(chapter));
+                                    let chapterURL: string;
+                                    try {
+                                        chapterURL = await crawler.findChapterURL(<string>bookDict.get(value), parseInt(chapter));
+                                    } catch (err) {
+                                        window.showErrorMessage(err);
+                                        return;
+                                    }
                                     if (chapterURL.length === 0) {
                                         window.showWarningMessage("找不到目标章节");
                                         return;
@@ -138,9 +144,10 @@ export function showSearchKeywordBox(context: ExtensionContext) {
     }).then(
         keyWord => {
             if (keyWord) {
-                let text = searchContentToEnd(context, keyWord);
-                setStatusBarMsg(text);
-                window.showInformationMessage("搜索完成");
+                let text = searchContentToEnd(context, keyWord).then(text => {
+                    setStatusBarMsg(text);
+                    window.showInformationMessage("搜索完成");
+                });
             }
         }
     );
