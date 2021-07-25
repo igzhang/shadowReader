@@ -2,7 +2,7 @@
 	"name": "shadow-reader",
 	"displayName": "shadow reader",
 	"description": "摸鱼划水看书，十分隐蔽",
-	"version": "0.4.1",
+	"version": "0.5.1",
 	"publisher": "rainbroadcast",
 	"engines": {
 		"vscode": "^1.54.0"
@@ -39,6 +39,11 @@
 						"笔趣阁"
 					],
 					"description": "在线书源"
+				},
+				"shadowReader.hiddenTime": {
+					"type": "number",
+					"default": 30,
+					"description": "自动隐藏时间"
 				}
 			}
 		},

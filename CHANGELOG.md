@@ -1,6 +1,11 @@
 # Change Log
 版本改动日志
 
+### 0.5.1
+>> 发布时间2021-07-25
+- feature：自动老板键--长时间不操作，默认使用老板键（感谢MerlinBlade提供的思路，详见[issue](https://github.com/igzhang/shadowReader/issues/7)）
+- impovement：第二次点击老板键，会返回原文本
+
 ### 0.4.1
 >> 发布时间2021-04-01
 - impovement：改版“网络书籍”功能，修改为目标网站在线阅读，当前支持笔趣阁（感谢isSamle提供的思路）
