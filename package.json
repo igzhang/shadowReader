@@ -39,6 +39,11 @@
 						"笔趣阁"
 					],
 					"description": "在线书源"
+				},
+				"shadowReader.hiddenTime": {
+					"type": "number",
+					"default": 30,
+					"description": "自动隐藏时间"
 				}
 			}
 		},

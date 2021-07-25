@@ -26,7 +26,7 @@ export class BiquWebParser implements Parser {
         this.fetchPage(this.currentPageURL);
     }
 
-    private fetchPage(pageURL: string): string {
+    private fetchPage(pageURL: string): void {
         axios.get(pageURL, {responseType: "arraybuffer"}).then(response => {
             let data = iconv.decode(response.data, this.defaultEncode);
             const $ = cheerioModule.load(data);
@@ -56,6 +56,7 @@ export class BiquWebParser implements Parser {
     }
 
     getPrevPage(pageSize: number): string {
+        console.log(pageSize);
         return "";
     }
 
