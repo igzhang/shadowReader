@@ -37,13 +37,18 @@ vscode插件市场，搜索`shadow reader`，安装
 ### 删除书籍
 1. 在主菜单选择`删除书籍`，选择书名`活着`，即可删除
 
-### 按内容搜索
+### 自动老板键
+1. 若长时间不操作，会自动使用老板键，当前显示文本为`Hello World`
+2. 再次使用`alt+/`，可返回原文本
+
+### 按内容向后搜索
 1. 点击状态栏，输入搜索文本
 ![feature X](./images/search.jpg)
 
 ## Extension Settings
-* `shadowReader.pageSize`：每次最多显示字数
+* `shadowReader.pageSize`：每次最多显示字数（默认50）
 * `shadowReader.onlineBookURL`：在线书源，当前已支持笔趣阁
+* `shadowReader.hiddenTime`：自动切换至老板状态时间（单位秒，默认30）
 * 修改快捷键：首选项 -- 键盘快捷方式
 ![feature X](./images/keybind.jpg)
 
