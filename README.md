@@ -7,7 +7,7 @@ vscode摸鱼看书插件，老板站在身后也不发现不了
 - 支持本地文本阅读
 - 其他编码格式自动转码（支持格式GB18030、Big5、UTF-8、UTF-16、UTF-32等）
 - 支持向后搜索内容
-- 支持网络书籍
+- 支持网络书籍（当前支持[笔趣阁](https://www.biqubao.com/)）
 
 ## Install
 vscode插件市场，搜索`shadow reader`，安装
@@ -25,8 +25,8 @@ vscode插件市场，搜索`shadow reader`，安装
 ![feature X](./images/new_book.jpg)
 ![feature X](./images/nick.png)
 3. 网络书籍：选择`网络书籍`，搜索名字(*为随机几个)，选择对应书籍
-![feature X](./images/fuzzy.jpg)
-![feature X](./images/online.jpg)
+![feature X](./images/fuzzy_online.png)
+![feature X](./images/online_list.png)
 
 ### 开始阅读
 1. 在主菜单选择`开始阅读`，选择刚添加的书名`活着`
@@ -37,13 +37,18 @@ vscode插件市场，搜索`shadow reader`，安装
 ### 删除书籍
 1. 在主菜单选择`删除书籍`，选择书名`活着`，即可删除
 
-### 按内容搜索
+### 自动老板键
+1. 若长时间不操作，会自动使用老板键，当前显示文本为`Hello World`
+2. 再次使用`alt+/`，可返回原文本
+
+### 按内容向后搜索
 1. 点击状态栏，输入搜索文本
 ![feature X](./images/search.jpg)
 
 ## Extension Settings
-* `shadowReader.pageSize`：每次最多显示字数
-* `shadowReader.onlineBookURL`：在线书籍目录，可切换为自己的地址
+* `shadowReader.pageSize`：每次最多显示字数（默认50）
+* `shadowReader.onlineBookURL`：在线书源，当前已支持笔趣阁
+* `shadowReader.hiddenTime`：自动切换至老板状态时间（单位秒，默认30）
 * 修改快捷键：首选项 -- 键盘快捷方式
 ![feature X](./images/keybind.jpg)
 
@@ -67,5 +72,5 @@ vscode插件市场，搜索`shadow reader`，安装
 支持编码 | utf8 | GB\Big5\UTF
 支持书量 | 1本 | 多本
 全文搜索 | 不支持 | 向后
-在线书籍 | 不支持 | 支持并可自定义
+在线书籍 | 不支持 | 支持
 更新时间 | 2019 | 2021

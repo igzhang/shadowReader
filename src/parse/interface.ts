@@ -6,10 +6,10 @@ export interface Parser {
     close(): void;
 
     // get next page content, if string.length === 0, means no more content
-    getNextPage(pageSize: number): string;
+    getNextPage(pageSize: number): Promise<string>;
 
     // get prev page content
-    getPrevPage(pageSize: number): string;
+    getPrevPage(pageSize: number): Promise<string>;
 
     // get percent info
     getPercent(): string;
