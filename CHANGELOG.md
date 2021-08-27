@@ -1,6 +1,10 @@
 # Change Log
 版本改动日志
 
+### 0.5.2
+>> 发布时间2021-08-27
+- bug fix：在线书籍章节选取错误，详见[issue](https://github.com/igzhang/shadowReader/issues/11)
+
 ### 0.5.1
 >> 发布时间2021-07-25
 - feature：自动老板键--长时间不操作，默认使用老板键（感谢MerlinBlade提供的思路，详见[issue](https://github.com/igzhang/shadowReader/issues/7)）

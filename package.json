@@ -2,7 +2,7 @@
 	"name": "shadow-reader",
 	"displayName": "shadow reader",
 	"description": "摸鱼划水看书，十分隐蔽",
-	"version": "0.5.1",
+	"version": "0.5.2",
 	"publisher": "rainbroadcast",
 	"engines": {
 		"vscode": "^1.54.0"
@@ -44,6 +44,11 @@
 					"type": "number",
 					"default": 30,
 					"description": "自动隐藏时间"
+				},
+				"shadowReader.chapterRegExp": {
+					"type": "string",
+					"default": "第(.+)[章|话]",
+					"description": "在线章节正则"
 				}
 			}
 		},
