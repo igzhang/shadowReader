@@ -32,7 +32,6 @@ function showNormalText() {
         clearTimeout(timeoutInternal);
     }
     let timeoutSecond = (<number>workspace.getConfiguration().get("shadowReader.hiddenTime")) * 1000;
-    console.log(timeoutSecond);
     timeoutInternal = setTimeout(showBossText, timeoutSecond);
 }
 
