@@ -87,32 +87,20 @@ async function newBookMenu(context: ExtensionContext) {
                 if (bookFuzzyName) {
                     let crawler: Craweler = new BiquCrawler();
                     let bookDict = await crawler.searchBook(bookFuzzyName);
-                    window.showQuickPick(Array.from(bookDict.keys()), {matchOnDescription: true}).then(value => {
+                    window.showQuickPick(Array.from(bookDict.keys()), {matchOnDescription: true}).then(async value => {
                         if (value) {
-                            window.showInputBox({
-                                value: "1",
-                                prompt: "从第几章开始？请输入数字"
-                            }).then(async chapter => {
-                                if (chapter && !isNaN(parseInt(chapter))) {
-                                    let chapterURL: string;
-                                    try {
-                                        chapterURL = await crawler.findChapterURL(<string>bookDict.get(value), parseInt(chapter));
-                                    } catch (err) {
-                                        window.showErrorMessage(err);
-                                        return;
-                                    }
-                                    if (chapterURL.length === 0) {
-                                        window.showWarningMessage("找不到目标章节");
-                                        return;
-                                    }
+                            let bookURL = <string>bookDict.get(value);
+                            let chapterURLDict = await crawler.findChapterURL(bookURL);
+                            window.showQuickPick(Array.from(chapterURLDict.keys()), {matchOnDescription: true}).then( startChapter => {
+                                if(startChapter) {
                                     let bookLibraryDictString = context.globalState.get(bookLibraryKey, "{}");
                                     let bookLibraryDict = JSON.parse(bookLibraryDictString);
-                                    bookLibraryDict[value] = bookDict.get(value);
+                                    bookLibraryDict[value] = bookURL;
                                     context.globalState.update(bookLibraryKey, JSON.stringify(bookLibraryDict));
-                                    context.globalState.update(<string>bookDict.get(value), {
+                                    context.globalState.update(bookURL, {
                                         kind: BookKind.online,
                                         readedCount: 0,
-                                        sectionPath: chapterURL,
+                                        sectionPath: <string>chapterURLDict.get(startChapter),
                                     });
                                     window.showInformationMessage("添加成功");
                                 }

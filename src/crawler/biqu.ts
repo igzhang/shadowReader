@@ -1,9 +1,8 @@
 import cheerioModule = require("cheerio");
 import axios from "axios";
 import iconv = require('iconv-lite');
-import { workspace } from "vscode";
+import { window } from "vscode";
 import { Craweler } from "./interface";
-import { convertChineseToNumber } from "../chinese_to_number";
 
 
 export class BiquCrawler implements Craweler {
@@ -19,8 +18,9 @@ export class BiquCrawler implements Craweler {
                 params: { q: keyWord }
             });
             data = response.data;
-        } catch (error) {
-            throw new Error(error);
+        } catch (error: any) {
+            window.showErrorMessage(error.message);
+            throw error;
         }
 
         const $ = cheerioModule.load(data);
@@ -32,28 +32,22 @@ export class BiquCrawler implements Craweler {
         
     }
 
-    async findChapterURL(url: string, chapter: number): Promise<string> {
-        let chapterURL: string = "";
+    async findChapterURL(url: string): Promise<Map<string, string>> {
         let data: string;
         let self = this;
         try {
             const response = await axios.get(url, {responseType: "arraybuffer"});
             data = iconv.decode(response.data, this.defaultEncode);
-        } catch (error) {
-            throw new Error(error);
+        } catch (error: any) {
+            window.showErrorMessage(error.message);
+            throw error;
         }
 
         const $ = cheerioModule.load(data);
-        let regExpString = <string>workspace.getConfiguration().get("shadowReader.chapterRegExp");
-        let re = new RegExp(regExpString);
-        $("a").each(function (_i, ele) {
-            let regRes = re.exec($(ele).text());
-            if (regRes && convertChineseToNumber(regRes[1]) === chapter) {
-                chapterURL = $(ele).prop("href");
-                return false;
-            }
-            return true;
+        let choices = new Map<string, string>();
+        $("#list a").each(function (_i, ele) {
+            choices.set($(ele).text(), self.baseURL + $(ele).prop("href"));
         });
-        return `${self.baseURL}${chapterURL}`;
+        return choices;
     }
 }
