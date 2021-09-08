@@ -1,6 +1,11 @@
 # Change Log
 版本改动日志
 
+### 0.5.3
+>> 发布时间2021-09-08
+- impovement：去掉`shadowReader.chapterRegExp`配置，将章节选择由数字改为列表选择
+- impovement：优化网络书籍报错提示
+
 ### 0.5.2
 >> 发布时间2021-08-27
 - bug fix：在线书籍章节选取错误，详见[issue](https://github.com/igzhang/shadowReader/issues/11)

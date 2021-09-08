@@ -1,6 +1,7 @@
 import axios from "axios";
 import cheerioModule = require("cheerio");
 import iconv = require('iconv-lite');
+import { window } from "vscode";
 import { Parser } from "./interface";
 import { BookKind, BookStore } from "./model";
 
@@ -27,8 +28,15 @@ export class BiquWebParser implements Parser {
 
     private async fetchPage(pageURL: string): Promise<void> {
         this.currentPageURL = pageURL;
-        const response = await axios.get(pageURL, { responseType: "arraybuffer" });
-        let data = iconv.decode(response.data, this.defaultEncode);
+        let data: string;
+        try {
+            const response = await axios.get(pageURL, { responseType: "arraybuffer" });
+            data = iconv.decode(response.data, this.defaultEncode);
+        } catch (e: any) {
+            window.showErrorMessage(e.message);
+            throw e;
+        }
+        
         const $ = cheerioModule.load(data);
         this.cacheText = $("#content").text().replace(/\n/g, "   ");
         this.title = $("h1").text();
