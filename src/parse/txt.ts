@@ -1,5 +1,6 @@
 import { openSync, closeSync, readSync, fstatSync } from "fs";
 import iconv = require('iconv-lite');
+import { workspace } from "vscode";
 import { BookKind, BookStore } from  "./model";
 import { Parser } from "./interface";
 
@@ -28,7 +29,8 @@ export class TxtFileParser implements Parser {
         }
 
         let showText = iconv.decode(buffer, this.encoding);
-        showText = showText.trim().replace(/\n/g, "   ").replace(/\r/g, "  ");
+        let newlineReplace = <string>workspace.getConfiguration().get("shadowReader.newlineReplace");
+        showText = showText.trim().replace(/\n/g, newlineReplace).replace(/\r/g, '');
         return [showText, bufferSize];
     }
 

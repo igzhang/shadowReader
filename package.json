@@ -44,6 +44,11 @@
 					"type": "number",
 					"default": 30,
 					"description": "自动隐藏时间"
+				},
+				"shadowReader.newlineReplace": {
+					"type": "string",
+					"default": "     ",
+					"description": "换行符替换（默认5个空格）"
 				}
 			}
 		},
