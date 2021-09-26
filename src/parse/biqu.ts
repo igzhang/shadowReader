@@ -1,7 +1,7 @@
 import axios from "axios";
 import cheerioModule = require("cheerio");
 import iconv = require('iconv-lite');
-import { window } from "vscode";
+import { window, workspace } from "vscode";
 import { Parser } from "./interface";
 import { BookKind, BookStore } from "./model";
 
@@ -38,7 +38,8 @@ export class BiquWebParser implements Parser {
         }
         
         const $ = cheerioModule.load(data);
-        this.cacheText = $("#content").text().replace(/\n/g, "   ");
+        let newlineReplace = <string>workspace.getConfiguration().get("shadowReader.newlineReplace");
+        this.cacheText = $("#content").text().replace(/\n/g, newlineReplace).replace(/\r/g, '');
         this.title = $("h1").text();
         $(".bottem1>a").each((i, ele) => {
             switch (i) {
