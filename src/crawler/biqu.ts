@@ -7,7 +7,7 @@ import { Craweler } from "./interface";
 
 export class BiquCrawler implements Craweler {
 
-    private readonly baseURL = "https://www.biqubao.com";
+    private readonly baseURL = "https://www.biqugee.com";
     private readonly defaultEncode = "gbk";
 
     async searchBook(keyWord: string): Promise<Map<string, string>> {

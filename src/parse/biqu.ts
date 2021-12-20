@@ -16,7 +16,7 @@ export class BiquWebParser implements Parser {
     private lastPageSize = 0;
     private title = "";
     private indexPageURL: string;
-    private readonly baseURL = "https://www.biqubao.com";
+    private readonly baseURL = "https://www.biqugee.com";
 
     constructor(currentPageURL: string, readedCount: number, indexPageURL: string) {
         this.currentPageURL = currentPageURL;

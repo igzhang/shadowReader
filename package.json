@@ -2,7 +2,7 @@
 	"name": "shadow-reader",
 	"displayName": "shadow reader",
 	"description": "摸鱼划水看书，十分隐蔽",
-	"version": "0.5.3",
+	"version": "0.5.4",
 	"publisher": "rainbroadcast",
 	"engines": {
 		"vscode": "^1.54.0"
@@ -31,9 +31,9 @@
 				},
 				"shadowReader.onlineBookURL": {
 					"type": "string",
-					"default": "https://www.biqubao.com",
+					"default": "https://www.biqugee.com",
 					"enum": [
-						"https://www.biqubao.com"
+						"https://www.biqugee.com"
 					],
 					"enumDescriptions": [
 						"笔趣阁"
