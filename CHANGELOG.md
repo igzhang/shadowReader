@@ -2,6 +2,10 @@
 版本改动日志
 
 ### 0.5.3
+>> 发布时间2021-12-20
+- bug fix：修改笔趣阁域名
+
+### 0.5.3
 >> 发布时间2021-09-08
 - impovement：去掉`shadowReader.chapterRegExp`配置，将章节选择由数字改为列表选择
 - impovement：优化网络书籍报错提示

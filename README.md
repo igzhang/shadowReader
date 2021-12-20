@@ -7,7 +7,7 @@ vscode摸鱼看书插件，老板站在身后也不发现不了
 - 支持本地文本阅读
 - 其他编码格式自动转码（支持格式GB18030、Big5、UTF-8、UTF-16、UTF-32等）
 - 支持向后搜索内容
-- 支持网络书籍（当前支持[笔趣阁](https://www.biqubao.com/)）
+- 支持网络书籍（当前支持[笔趣阁](https://www.biqugee.com/)）
 
 ## Install
 vscode插件市场，搜索`shadow reader`，安装
