@@ -6,18 +6,18 @@ import { Parser } from "./interface";
 import { BookKind, BookStore } from "./model";
 import { CrawelerDomains } from "../const";
 
-export class BiquWebParser implements Parser {
+export class CaimoWebParser implements Parser {
 
     private prevPageURL: string = "";
     private nextPageURL: string = "";
     private currentPageURL: string;
     private readedCount: number;
     private cacheText = "";
-    private readonly defaultEncode = "gbk";
+    private readonly defaultEncode = "utf-8";
     private lastPageSize = 0;
     private title = "";
     private indexPageURL: string;
-    private readonly baseURL = <string>CrawelerDomains.get("biquURL");
+    private readonly baseURL = <string>CrawelerDomains.get("caimoURL");
 
     constructor(currentPageURL: string, readedCount: number, indexPageURL: string) {
         this.currentPageURL = currentPageURL;
@@ -40,22 +40,11 @@ export class BiquWebParser implements Parser {
         
         const $ = cheerioModule.load(data);
         let newlineReplace = <string>workspace.getConfiguration().get("shadowReader.newlineReplace");
-        this.cacheText = $("#content").text().replace(/\n/g, newlineReplace).replace(/\r/g, '');
-        this.title = $("h1").text();
-        $(".bottem1>a").each((i, ele) => {
-            switch (i) {
-                case 0:
-                    this.prevPageURL = `${this.baseURL}${$(ele).prop("href")}`;
-                    break;
+        this.cacheText = $("#content").text().replace(/<p>/g, newlineReplace).replace(/\n/g, newlineReplace).replace(/\r/g, '');
+        this.title = $(".title em").text();
 
-                case 2:
-                    this.nextPageURL = `${this.baseURL}${$(ele).prop("href")}`;
-                    break;
-            
-                default:
-                    break;
-            }
-        });
+        this.prevPageURL = this.baseURL + $("#prev_url").prop("href");
+        this.nextPageURL = this.baseURL + $("#next_url").prop("href");
     }
 
     async getCacheText(start: number, pageSize: number): Promise<string> {
