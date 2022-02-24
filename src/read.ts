@@ -3,7 +3,9 @@ import { setStatusBarMsg } from "./util";
 import { BookKind, BookStore } from "./parse/model";
 import { Parser } from "./parse/interface";
 import { TxtFileParser } from "./parse/txt";
+import { CrawelerDomains } from "./const";
 import { BiquWebParser } from "./parse/biqu";
+import { CaimoWebParser } from "./parse/caimo";
 
 let bookPath: string = "";
 let parser: Parser;
@@ -29,8 +31,12 @@ function loadParser(context: ExtensionContext, bookPath: string): Parser {
       return new TxtFileParser(bookPath, bookStore.readedCount);
     
     case BookKind.online:
-      return new BiquWebParser(<string>bookStore.sectionPath, bookStore.readedCount, bookPath);
-  
+      if(bookStore.sectionPath?.startsWith(<string>CrawelerDomains.get("biquURL"))) {
+        return new BiquWebParser(<string>bookStore.sectionPath, bookStore.readedCount, bookPath);
+      } else if(bookStore.sectionPath?.startsWith(<string>CrawelerDomains.get("caimoURL"))) {
+        return new CaimoWebParser(<string>bookStore.sectionPath, bookStore.readedCount, bookPath);
+      }
+      throw new Error("book url is not supported");
     default:
       throw new Error("book kind is not supported");
   }

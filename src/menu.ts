@@ -4,7 +4,9 @@ import { checkFileDecodeOrConvert, bookLibraryKey, deleteFile } from "./store";
 import { loadFile, searchContentToEnd } from "./read";
 import { setStatusBarMsg } from "./util";
 import { Craweler } from "./crawler/interface";
+import { CrawelerDomains } from "./const";
 import { BiquCrawler } from "./crawler/biqu";
+import { CaimoCrawler } from "./crawler/caimo";
 import { BookKind } from "./parse/model";
 
 let bookLibraryDict: object = {};
@@ -51,6 +53,18 @@ export async function showMainMenu(context: ExtensionContext) {
     }
 }
 
+function newOnlineCraweler(): Craweler {
+    let bookURL = workspace.getConfiguration().get("shadowReader.onlineBookURL");
+    switch (bookURL) {
+        case <string>CrawelerDomains.get("caimoURL"):
+            return new CaimoCrawler();
+        case <string>CrawelerDomains.get("biquURL"):
+            return new BiquCrawler();
+        default:
+            return new CaimoCrawler();;
+    }
+}
+
 async function newBookMenu(context: ExtensionContext) {
     let newBookChoice = await window.showQuickPick([Menu.newLocalBook, Menu.newOnlineBook ], {
         matchOnDescription: true,
@@ -85,7 +99,7 @@ async function newBookMenu(context: ExtensionContext) {
                 prompt: "要搜索的书名"
             }).then(async bookFuzzyName => {
                 if (bookFuzzyName) {
-                    let crawler: Craweler = new BiquCrawler();
+                    let crawler: Craweler = newOnlineCraweler();
                     let bookDict = await crawler.searchBook(bookFuzzyName);
                     window.showQuickPick(Array.from(bookDict.keys()), {matchOnDescription: true}).then(async value => {
                         if (value) {
