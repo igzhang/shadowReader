@@ -13,9 +13,12 @@ vscode摸鱼看书插件，老板站在身后也不发现不了
 vscode插件市场，搜索`shadow reader`，安装
 
 ## Quick Start
-### 主菜单
+### 主菜单（2选1）
 1. ctrl+shift+p，搜索`shadowReader:开始工作`
 ![feature X](./images/start.jpg)
+2. 点击右上角的图标
+![feature X](./images/start_icon.png)
+
 主菜单如下
 ![feature X](./images/main.jpg)
 
