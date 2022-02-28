@@ -2,7 +2,7 @@
 	"name": "shadow-reader",
 	"displayName": "shadow reader",
 	"description": "摸鱼划水看书，十分隐蔽",
-	"version": "0.7.1",
+	"version": "0.7.2",
 	"publisher": "rainbroadcast",
 	"engines": {
 		"vscode": "^1.54.0"
@@ -72,7 +72,8 @@
 			{
 				"command": "shadowReader.start",
 				"title": "开始工作",
-				"category": "shadowReader"
+				"category": "shadowReader",
+				"icon": "$(book)"
 			}
 		],
 		"menus": {
