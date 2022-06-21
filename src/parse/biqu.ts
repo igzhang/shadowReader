@@ -13,7 +13,7 @@ export class BiquWebParser implements Parser {
     private currentPageURL: string;
     private readedCount: number;
     private cacheText = "";
-    private readonly defaultEncode = "gbk";
+    private readonly defaultEncode = "utf-8";
     private lastPageSize = 0;
     private title = "";
     private indexPageURL: string;
