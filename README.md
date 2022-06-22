@@ -61,8 +61,8 @@ vscode插件市场，搜索`shadow reader`，安装
 
 ## Known Issues
 - 上下一页的无反应（暂不清楚形成原因，可通过重新设置快捷键解决）
-- 笔趣阁在代理下无法访问
-- 笔趣阁存在验证码
+- 笔趣阁在梯子下无法访问（请关闭梯子即可）
+- certificate expire [vscode issue](https://github.com/microsoft/vscode/issues/136787)，可通过禁用vscode证书验证实现![feature X](./images/certificate_expire.png)
 
 ## Future Feature
 - 其他格式支持(比如.epub)
