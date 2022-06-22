@@ -1,6 +1,11 @@
 # Change Log
 版本改动日志
 
+### 0.7.4
+>> 发布时间2022-06-22
+- impovement：笔趣阁遭遇验证码后，多次尝试
+- impovement：解决certificate expire问题，方法见known issues
+
 ### 0.7.3
 >> 发布时间2022-06-21
 - bug fix：笔趣阁无法访问及乱码问题
