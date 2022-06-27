@@ -44,11 +44,11 @@ export class BiquWebParser implements Parser {
         this.title = $("h1").text();
         $(".bottem1>a").each((i, ele) => {
             switch (i) {
-                case 0:
+                case 1:
                     this.prevPageURL = `${this.baseURL}${$(ele).prop("href")}`;
                     break;
 
-                case 2:
+                case 3:
                     this.nextPageURL = `${this.baseURL}${$(ele).prop("href")}`;
                     break;
             
