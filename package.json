@@ -2,7 +2,7 @@
 	"name": "shadow-reader",
 	"displayName": "shadow reader",
 	"description": "摸鱼划水看书，十分隐蔽",
-	"version": "0.7.5",
+	"version": "0.8.1",
 	"publisher": "rainbroadcast",
 	"engines": {
 		"vscode": "^1.54.0"
@@ -34,11 +34,11 @@
 					"default": "https://www.caimoge.net",
 					"enum": [
 						"https://www.caimoge.net",
-						"https://www.biqugee.com"
+						"https://www.ruihangkeji.com"
 					],
 					"enumDescriptions": [
 						"采墨阁",
-						"笔趣阁"
+						"笔趣E"
 					],
 					"description": "在线书源"
 				},
@@ -46,11 +46,6 @@
 					"type": "number",
 					"default": 30,
 					"description": "自动隐藏时间"
-				},
-				"shadowReader.newlineReplace": {
-					"type": "string",
-					"default": "     ",
-					"description": "换行符替换（默认5个空格）"
 				}
 			}
 		},

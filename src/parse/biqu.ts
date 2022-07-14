@@ -1,7 +1,7 @@
 import axios from "axios";
 import cheerioModule = require("cheerio");
 import iconv = require('iconv-lite');
-import { window, workspace } from "vscode";
+import { window } from "vscode";
 import { Parser } from "./interface";
 import { BookKind, BookStore } from "./model";
 import { CrawelerDomains } from "../const";
@@ -39,8 +39,12 @@ export class BiquWebParser implements Parser {
         }
         
         const $ = cheerioModule.load(data);
-        let newlineReplace = <string>workspace.getConfiguration().get("shadowReader.newlineReplace");
-        this.cacheText = $("#content").text().replace(/\n/g, newlineReplace).replace(/\r/g, '');
+        let html = $("#content").html();
+        if (!html) {
+            window.showErrorMessage("爬不到内容啦");
+            return;
+        }
+        this.cacheText = html.replace(/<p>.*<\/p>/g, '').replace(/<br><br>/g, '\n').trim();
         this.title = $("h1").text();
         $(".bottem1>a").each((i, ele) => {
             switch (i) {
@@ -78,7 +82,15 @@ export class BiquWebParser implements Parser {
 
         this.lastPageSize = pageSize;
         let showText = this.cacheText.slice(this.readedCount, this.readedCount + pageSize);
-        this.readedCount = this.readedCount + pageSize;
+
+        let lineBreakPosition = showText.indexOf("\n");
+        if (lineBreakPosition === -1) {
+            this.readedCount += pageSize;
+        }else{
+            this.readedCount += lineBreakPosition + 1;
+            showText = showText.slice(0, lineBreakPosition);
+        }
+        
         if (this.readedCount >= this.cacheText.length) {
             this.readedCount = this.cacheText.length;
         }
