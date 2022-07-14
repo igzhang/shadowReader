@@ -1,6 +1,5 @@
 import { openSync, closeSync, readSync, fstatSync } from "fs";
 import iconv = require('iconv-lite');
-import { workspace } from "vscode";
 import { BookKind, BookStore } from  "./model";
 import { Parser } from "./interface";
 
@@ -29,18 +28,26 @@ export class TxtFileParser implements Parser {
         }
 
         let showText = iconv.decode(buffer, this.encoding);
-        let newlineReplace = <string>workspace.getConfiguration().get("shadowReader.newlineReplace");
-        showText = showText.trim().replace(/\n/g, newlineReplace).replace(/\r/g, '');
+        let lineBreakPosition = showText.indexOf('\n');
+        if (lineBreakPosition !== -1) {
+            bufferSize = ( lineBreakPosition + 1) * this.stringMaxSize;
+            showText = showText.slice(0, lineBreakPosition);
+        }
+        
+        showText = showText.replace(/\r/g, '').trim();
         return [showText, bufferSize];
     }
 
     async getNextPage(pageSize: number): Promise<string> {
-        let [showText, bufferSize] = this.getPage(pageSize, this.readedCount);
-        if (bufferSize === 0) {
-            return "";
+        while (this.readedCount < this.totalByteSize) {
+            let [showText, bufferSize] = this.getPage(pageSize, this.readedCount);
+            this.readedCount += bufferSize;
+            if (showText.length === 0) {
+                continue;
+            }
+            return showText;
         }
-        this.readedCount += bufferSize;
-        return showText;
+        return '';
     }
 
     getPrevPage(pageSize: number): Promise<string> {

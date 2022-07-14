@@ -9,7 +9,7 @@ import { CaimoWebParser } from "./parse/caimo";
 
 let bookPath: string = "";
 let parser: Parser;
-const readEOFTip = "已达到结尾";
+const readEOFTip = "";
 
 
 function loadParser(context: ExtensionContext, bookPath: string): Parser {
