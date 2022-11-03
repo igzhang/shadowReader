@@ -19,7 +19,7 @@ function sleep(delay: number) {
 
 export class BiquCrawler implements Craweler {
 
-    private readonly baseURL = "https://www.ruihangkeji.com";
+    private readonly baseURL = "https://www.biqugee6.com";
     private readonly defaultEncode = "utf-8";
 
     async searchBook(keyWord: string): Promise<Map<string, string>> {

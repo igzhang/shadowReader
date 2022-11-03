@@ -61,7 +61,7 @@ function newOnlineCraweler(): Craweler {
         case <string>CrawelerDomains.get("biquURL"):
             return new BiquCrawler();
         default:
-            return new CaimoCrawler();;
+            return new CaimoCrawler();
     }
 }
 
