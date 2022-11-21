@@ -46,6 +46,11 @@
 					"type": "number",
 					"default": 30,
 					"description": "自动隐藏时间"
+				},
+				"shadowReader.bossStatusMsg":{
+					"type": "string",
+					"default": "Hello world",
+					"description": "Boss状态默认静态文本"
 				}
 			}
 		},

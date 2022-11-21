@@ -4,7 +4,7 @@ export const searchToEndCommandID = "shadowReader.searchToEnd";
 let myStatusBarItem: StatusBarItem = window.createStatusBarItem();
 myStatusBarItem.command = searchToEndCommandID;
 
-const defaultBossText = "Hello world";
+let defaultBossText = <string>workspace.getConfiguration().get("shadowReader.bossStatusMsg");
 let lastReadText = '';
 let showingText = '';
 let timeoutInternal: NodeJS.Timeout | null = null;
