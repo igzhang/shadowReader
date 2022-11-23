@@ -4,7 +4,6 @@ export const searchToEndCommandID = "shadowReader.searchToEnd";
 let myStatusBarItem: StatusBarItem = window.createStatusBarItem();
 myStatusBarItem.command = searchToEndCommandID;
 
-const defaultBossText = "Hello world";
 let lastReadText = '';
 let showingText = '';
 let timeoutInternal: NodeJS.Timeout | null = null;
@@ -22,6 +21,7 @@ function _setStatusBar(msg: string) {
 
 // 显示老板信息
 function showBossText() {
+    let defaultBossText = <string>workspace.getConfiguration().get("shadowReader.bossStatusMsg");
     _setStatusBar(defaultBossText);
 }
 
@@ -37,6 +37,7 @@ function showNormalText() {
 
 export function toggleBossMsg() {
     // 已经显示老板信息
+    let defaultBossText = <string>workspace.getConfiguration().get("shadowReader.bossStatusMsg");
     if (showingText === defaultBossText) {
         showNormalText();
     } else {
