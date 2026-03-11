@@ -1,4 +1,4 @@
 export const CrawelerDomains = new Map<string, string>([
-    ["biquURL", "https://www.biqugee6.com"],
-    ["caimoURL", "https://www.caimoge.net"],
+    ["biquURL", "https://www.biquge7.xyz"],
+    ["caimoURL", "https://www.caimoge.com"],
 ]);

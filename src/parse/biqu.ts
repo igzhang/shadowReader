@@ -31,7 +31,13 @@ export class BiquWebParser implements Parser {
         this.currentPageURL = pageURL;
         let data: string;
         try {
-            const response = await axios.get(pageURL, { responseType: "arraybuffer" });
+            const response = await axios.get(pageURL, {
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    "Accept-Language": "zh-CN,zh;q=0.9",
+                },
+                responseType: "arraybuffer",
+            });
             data = iconv.decode(response.data, this.defaultEncode);
         } catch (e: any) {
             window.showErrorMessage(e.message);
@@ -39,25 +45,26 @@ export class BiquWebParser implements Parser {
         }
         
         const $ = cheerioModule.load(data);
-        let html = $("#content").html();
+        let html = $(".text").html();
         if (!html) {
             window.showErrorMessage("爬不到内容啦");
             return;
         }
-        this.cacheText = html.replace(/<p>.*<\/p>/g, '').replace(/<br><br>/g, '\n').trim();
+        this.cacheText = html.replace(/<!--.*?-->/g, "").replace(/&nbsp;/g, "").replace(/<br><br>/g, '\n').trim();
         this.title = $("h1").text();
-        $(".bottem1>a").each((i, ele) => {
-            switch (i) {
-                case 1:
-                    this.prevPageURL = `${this.baseURL}${$(ele).prop("href")}`;
-                    break;
-
-                case 3:
-                    this.nextPageURL = `${this.baseURL}${$(ele).prop("href")}`;
-                    break;
-            
-                default:
-                    break;
+        this.prevPageURL = this.indexPageURL;
+        this.nextPageURL = this.indexPageURL;
+        $("a[href^='/']").each((_i, ele) => {
+            const text = $(ele).text().trim();
+            const href = $(ele).prop("href");
+            if (!href) {
+                return;
+            }
+            if (text.includes("上一章")) {
+                this.prevPageURL = `${this.baseURL}${href}`;
+            }
+            if (text.includes("下一章")) {
+                this.nextPageURL = `${this.baseURL}${href}`;
             }
         });
     }
