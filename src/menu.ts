@@ -94,35 +94,51 @@ async function newBookMenu(context: ExtensionContext) {
                 window.showErrorMessage("onlineBookURL未配置");
                 return;
             }
-            window.showInputBox({
+            const bookFuzzyName = await window.showInputBox({
                 value: "",
                 prompt: "要搜索的书名"
-            }).then(async bookFuzzyName => {
-                if (bookFuzzyName) {
-                    let crawler: Craweler = newOnlineCraweler();
-                    let bookDict = await crawler.searchBook(bookFuzzyName);
-                    window.showQuickPick(Array.from(bookDict.keys()), {matchOnDescription: true}).then(async value => {
-                        if (value) {
-                            let bookURL = <string>bookDict.get(value);
-                            let chapterURLDict = await crawler.findChapterURL(bookURL);
-                            window.showQuickPick(Array.from(chapterURLDict.keys()), {matchOnDescription: true}).then( startChapter => {
-                                if(startChapter) {
-                                    let bookLibraryDictString = context.globalState.get(bookLibraryKey, "{}");
-                                    let bookLibraryDict = JSON.parse(bookLibraryDictString);
-                                    bookLibraryDict[value] = bookURL;
-                                    context.globalState.update(bookLibraryKey, JSON.stringify(bookLibraryDict));
-                                    context.globalState.update(bookURL, {
-                                        kind: BookKind.online,
-                                        readedCount: 0,
-                                        sectionPath: <string>chapterURLDict.get(startChapter),
-                                    });
-                                    window.showInformationMessage("添加成功");
-                                }
-                            });
-                        }
-                    });
-                }
             });
+            if (!bookFuzzyName) {
+                return;
+            }
+
+            try {
+                let crawler: Craweler = newOnlineCraweler();
+                let bookDict = await crawler.searchBook(bookFuzzyName);
+                if (bookDict.size === 0) {
+                    return;
+                }
+
+                const value = await window.showQuickPick(Array.from(bookDict.keys()), { matchOnDescription: true });
+                if (!value) {
+                    return;
+                }
+
+                let bookURL = <string>bookDict.get(value);
+                let chapterURLDict = await crawler.findChapterURL(bookURL);
+                if (chapterURLDict.size === 0) {
+                    window.showWarningMessage("找到书籍了，但没拿到章节目录");
+                    return;
+                }
+
+                const startChapter = await window.showQuickPick(Array.from(chapterURLDict.keys()), { matchOnDescription: true });
+                if (!startChapter) {
+                    return;
+                }
+
+                let bookLibraryDictString = context.globalState.get(bookLibraryKey, "{}");
+                let bookLibraryDict = JSON.parse(bookLibraryDictString);
+                bookLibraryDict[value] = bookURL;
+                await context.globalState.update(bookLibraryKey, JSON.stringify(bookLibraryDict));
+                await context.globalState.update(bookURL, {
+                    kind: BookKind.online,
+                    readedCount: 0,
+                    sectionPath: <string>chapterURLDict.get(startChapter),
+                });
+                window.showInformationMessage("添加成功");
+            } catch (error: any) {
+                window.showErrorMessage(error.message);
+            }
             
             break;
 

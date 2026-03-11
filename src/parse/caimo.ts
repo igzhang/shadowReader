@@ -31,7 +31,13 @@ export class CaimoWebParser implements Parser {
         this.currentPageURL = pageURL;
         let data: string;
         try {
-            const response = await axios.get(pageURL, { responseType: "arraybuffer" });
+            const response = await axios.get(pageURL, {
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    "Accept-Language": "zh-CN,zh;q=0.9",
+                },
+                responseType: "arraybuffer",
+            });
             data = iconv.decode(response.data, this.defaultEncode);
         } catch (e: any) {
             window.showErrorMessage(e.message);
@@ -40,17 +46,31 @@ export class CaimoWebParser implements Parser {
         
         const $ = cheerioModule.load(data);
 
-        let html = $("#content").html();
+        let html = $("#chaptercontent #booktxt").html() || $(".content #booktxt").html();
         if (!html) {
             window.showErrorMessage("爬不到内容啦");
             return;
         }
 
         this.cacheText = html.replace(/<p>/g, '').replace(/<\/p>/g, '\n').replace(/<div>.*<\/div>/g, '').trim();
-        this.title = $(".title em").text();
+        this.title = $(".title em").text() || $("h1").text();
 
-        this.prevPageURL = this.baseURL + $("#prev_url").prop("href");
-        this.nextPageURL = this.baseURL + $("#next_url").prop("href");
+        const navLinks = $("a[href^='/read/']");
+        this.prevPageURL = this.currentPageURL;
+        this.nextPageURL = this.indexPageURL;
+        navLinks.each((_i, ele) => {
+            const text = $(ele).text().trim();
+            const href = $(ele).prop("href");
+            if (!href) {
+                return;
+            }
+            if (text.includes("上一页")) {
+                this.prevPageURL = this.baseURL + href;
+            }
+            if (text.includes("下一页")) {
+                this.nextPageURL = this.baseURL + href;
+            }
+        });
     }
 
     async getCacheText(start: number, pageSize: number): Promise<string> {
